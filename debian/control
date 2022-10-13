@@ -1,0 +1,48 @@
+Source: node-globby
+Maintainer: Debian Javascript Maintainers <pkg-javascript-devel@lists.alioth.debian.org>
+Uploaders: Sanoob Pattanath <hello@pattanath.com>,
+ Pirate Praveen <praveen@debian.org>
+Section: javascript
+Testsuite: autopkgtest-pkg-nodejs
+Priority: optional
+Build-Depends: debhelper-compat (= 13)
+ , dh-sequence-nodejs
+ , mocha
+ , node-array-union <!nocheck>
+ , node-babel7
+ , node-braces (>= 3.0.2+~3.0.0)
+ , node-ci-info (>= 2.0.0+~2.0.0)
+ , node-glob-parent (>= 5.1.1+~5.1.0)
+ , node-ignore <!nocheck>
+ , node-micromatch <!nocheck>
+ , node-path-type <!nocheck>
+ , node-sinon (>= 9.2.0+ds+~cs54.23.21)
+ , node-tape <!nocheck>
+ , node-types-node
+ , node-typescript
+Standards-Version: 4.6.0
+Vcs-Browser: https://salsa.debian.org/js-team/node-globby
+Vcs-Git: https://salsa.debian.org/js-team/node-globby.git
+Homepage: https://github.com/sindresorhus/globby
+Rules-Requires-Root: no
+
+Package: node-globby
+Architecture: all
+Depends: ${misc:Depends}
+ , node-array-union
+ , node-glob
+ , node-glob-parent
+ , node-ignore
+ , node-micromatch
+ , node-path-type
+ , node-slash
+Breaks: node-copy-webpack-plugin (<< 4.3.0-9~)
+Provides: ${nodejs:Provides}
+Description: Extends glob with promise API
+ Extends glob with support for multiple patterns and exposes a Promise API.
+ .
+ Related projects includes multimatch which can match against a list instead of
+ the filesystem and then glob-stream which is a streaming alternative finally
+ matcher is simple wildcard matching.
+ .
+ Node.js is an event-based server-side JavaScript engine.

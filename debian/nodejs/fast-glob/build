@@ -1,0 +1,3 @@
+mv src/benchmark .
+tsc
+mv benchmark src/

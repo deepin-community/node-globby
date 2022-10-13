@@ -1,0 +1,67 @@
+version=4
+opts=\
+dversionmangle=s/\+(debian|dfsg|ds|deb)(\.\d+)?$//,\
+filenamemangle=s/.*\/v?([\d\.-]+)\.tar\.gz/node-globby-$1.tar.gz/ \
+ https://github.com/sindresorhus/globby/tags .*/archive/.*/v?([\d\.]+).tar.gz group
+
+opts=\
+ctype=nodejs,\
+component=dir-glob,\
+dversionmangle=auto,\
+filenamemangle=s/.*\/v?([\d\.-]+)\.tar\.gz/node-dir-glob-$1.tar.gz/ \
+ https://github.com/kevva/dir-glob/tags .*/archive/.*/v?([\d\.]+).tar.gz checksum
+
+opts=\
+ctype=nodejs,\
+component=fast-glob,\
+dversionmangle=auto,\
+filenamemangle=s/.*\/v?([\d\.-]+)\.tar\.gz/node-fast-glob-$1.tar.gz/ \
+ https://github.com/mrmlnc/fast-glob/tags .*/archive/.*/v?([\d\.]+).tar.gz checksum
+
+opts=\
+ctype=nodejs,\
+component=fastq,\
+dversionmangle=auto,\
+filenamemangle=s/.*\/v?([\d\.-]+)\.tar\.gz/node-fastq-$1.tar.gz/ \
+ https://github.com/mcollina/fastq/tags .*/archive/.*/v?([\d\.]+).tar.gz checksum
+
+opts=\
+ctype=nodejs,\
+component=merge2,\
+dversionmangle=auto,\
+filenamemangle=s/.*\/v?([\d\.-]+)\.tar\.gz/node-merge2-$1.tar.gz/ \
+ https://github.com/teambition/merge2/tags .*/archive/.*/v?([\d\.]+).tar.gz checksum
+
+opts=\
+ctype=nodejs,\
+component=reusify,\
+dversionmangle=auto,\
+filenamemangle=s/.*\/v?([\d\.-]+)\.tar\.gz/node-reusify-$1.tar.gz/ \
+ https://github.com/mcollina/reusify/tags .*/archive/.*/v?([\d\.]+).tar.gz checksum
+
+opts=\
+ctype=nodejs,\
+component=run-parallel,\
+dversionmangle=auto,\
+filenamemangle=s/.*\/v?([\d\.-]+)\.tar\.gz/node-run-parallel-$1.tar.gz/ \
+ https://github.com/feross/run-parallel/tags .*/archive/.*/v?([\d\.]+).tar.gz checksum
+
+# It is not recommended use npmregistry. Please investigate more.
+# Take a look at https://wiki.debian.org/debian/watch/
+opts="searchmode=plain,ctype=nodejs,component=nodelib-fsscandir,pgpmode=none" \
+ https://registry.npmjs.org/@nodelib/fs.scandir https://registry.npmjs.org/@nodelib/fs.scandir/-/fs.scandir-([\d\.]+)@ARCHIVE_EXT@ checksum
+
+# It is not recommended use npmregistry. Please investigate more.
+# Take a look at https://wiki.debian.org/debian/watch/
+opts="searchmode=plain,ctype=nodejs,component=nodelib-fsstat,pgpmode=none" \
+ https://registry.npmjs.org/@nodelib/fs.stat https://registry.npmjs.org/@nodelib/fs.stat/-/fs.stat-([\d\.]+)@ARCHIVE_EXT@ checksum
+
+# It is not recommended use npmregistry. Please investigate more.
+# Take a look at https://wiki.debian.org/debian/watch/
+opts="searchmode=plain,ctype=nodejs,component=nodelib-fswalk,pgpmode=none" \
+ https://registry.npmjs.org/@nodelib/fs.walk https://registry.npmjs.org/@nodelib/fs.walk/-/fs.walk-([\d\.]+)@ARCHIVE_EXT@ checksum
+
+# It is not recommended use npmregistry. Please investigate more.
+# Take a look at https://wiki.debian.org/debian/watch/
+opts="searchmode=plain,ctype=nodejs,component=nodelib-fs-macchiato,pgpmode=none" \
+ https://registry.npmjs.org/@nodelib/fs.macchiato https://registry.npmjs.org/@nodelib/fs.macchiato/-/fs.macchiato-([\d\.]+)@ARCHIVE_EXT@ checksum

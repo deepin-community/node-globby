@@ -1,0 +1,5 @@
+fastq fast-glob
+nodelib-fsscandir fast-glob
+nodelib-fsstat fast-glob
+nodelib-fswalk fast-glob
+run-parallel fast-glob

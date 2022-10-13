@@ -1,0 +1,6 @@
+@sinonjs/fake-timers
+@types/glob-parent
+@types/minimist
+@types/mocha
+@types/node
+execa

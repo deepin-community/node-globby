@@ -1,0 +1,6 @@
+@types/braces
+@types/glob
+@types/micromatch
+@types/minimatch
+@types/sinon
+@types/sinonjs__fake-timers

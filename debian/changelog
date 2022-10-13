@@ -1,0 +1,100 @@
+node-globby (11.0.2+~cs16.20.37-2) unstable; urgency=medium
+
+  * Team upload
+  * Fix GitHub tags regex
+  * Declare compliance with policy 4.6.0
+  * Drop versioned constraint on node-glob and node-path-type
+  * Refresh replace-ava-by-tape patch due to tape changes (fixes debci)
+  * Add lintian overrides
+
+ -- Yadd <yadd@debian.org>  Wed, 15 Sep 2021 11:04:18 +0200
+
+node-globby (11.0.2+~cs16.20.37-1) unstable; urgency=medium
+
+  * Team upload
+  * Declare compliance with policy 4.5.1
+  * Add ctype=nodejs to component(s)
+  * New upstream version 11.0.2+~cs16.20.37
+    Updates:
+    + fastq 1.10.0
+    + globby 11.0.2
+    + @nodelib/fs.macchiato 1.0.3
+    + @nodelib/fs.scandir 2.1.4
+    + @nodelib/fs.stat 2.1.4
+    + @nodelib/fs.walk 1.2.6
+  * Refresh patches and autopkgtest
+  * Replace deprecated build dependency to node-typescript-types by
+    node-types-node (Closes: #979772)
+
+ -- Xavier Guimard <yadd@debian.org>  Sat, 16 Jan 2021 00:20:27 +0100
+
+node-globby (11.0.1+~cs16.19.32-1) unstable; urgency=medium
+
+  * Team upload
+  * New upstream version 11.0.1+~cs16.19.32
+    Updates: fastq 1.9.0
+  * Disable some tests incompatible with autopkgtest env
+
+ -- Xavier Guimard <yadd@debian.org>  Sat, 31 Oct 2020 07:44:57 +0100
+
+node-globby (11.0.1+~cs16.18.31-1) unstable; urgency=medium
+
+  * Team upload
+
+  [ Debian Janitor ]
+  * Trim trailing whitespace.
+  * Use secure copyright file specification URI.
+  * Set upstream metadata fields: Bug-Database, Bug-Submit, Repository,
+    Repository-Browse.
+
+  [ Xavier Guimard ]
+  * Bump debhelper compatibility level to 13
+  * Declare compliance with policy 4.5.0
+  * Add "Rules-Requires-Root: no"
+  * Add debian/gbp.conf
+  * Use dh-sequence-nodejs auto install
+  * New upstream version 11.0.1+~cs16.18.31
+    Embed components:
+    + dir-glob
+    + fast-glob
+    + fastq
+    + merge2
+    + reusify
+    + run-parallel
+    + @nodelib/fs.scandir
+    + @nodelib/fs.stat
+    + @nodelib/fs.walk
+    + @nodelib/fs.macchiato
+    Really: 11.0.1+~3.0.1+~3.2.4+~1.8.0+~1.4.1+~1.0.4+~1.1.9+~2.1.3+~2.0.3
+            +~1.2.4+~1.0.2
+  * Embed some missing @types declaration for build only
+  * Update copyright
+  * Update build
+  * Enable upstream test using tape instead of ava
+  * Update dependencies:
+    + remove      : node-arrify, node-pify
+    + add         : node-glob-parent, node-ignore, node-micromatch
+    + build-depend: mocha, node-ci-info, node-sinon, node-tape,
+                    node-typescript, node-typescript-types
+  * Indicates that this version breaks node-copy-webpack-plugin < 4.3.0-9~
+
+ -- Xavier Guimard <yadd@debian.org>  Mon, 19 Oct 2020 10:56:27 +0200
+
+node-globby (7.1.1-2) unstable; urgency=medium
+
+  * Tighten dependency on node-path-type
+
+ -- Pirate Praveen <praveen@debian.org>  Fri, 09 Feb 2018 12:42:16 +0530
+
+node-globby (7.1.1-1) unstable; urgency=medium
+
+  * Team upload
+  * New upstream release
+
+ -- Pirate Praveen <praveen@debian.org>  Thu, 18 Jan 2018 21:30:56 +0530
+
+node-globby (6.1.0-1) unstable; urgency=low
+
+  * Initial release (Closes: #876625)
+
+ -- Sanoob Pattanath <hello@pattanath.com>  Sun, 01 Oct 2017 04:09:27 +0000
