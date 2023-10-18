@@ -1,6 +1,6 @@
 # False positive
-embedded-javascript-library usr/share/nodejs/@nodelib/fs.scandir/out/providers/async.js please use libjs-async
-embedded-javascript-library usr/share/nodejs/@nodelib/fs.stat/out/providers/async.js please use libjs-async
-embedded-javascript-library usr/share/nodejs/@nodelib/fs.walk/out/providers/async.js please use libjs-async
-embedded-javascript-library usr/share/nodejs/@nodelib/fs.walk/out/readers/async.js please use libjs-async
-embedded-javascript-library usr/share/nodejs/fast-glob/out/providers/async.js please use libjs-async
+embedded-javascript-library *usr/share/nodejs/@nodelib/fs.scandir/out/providers/async.js*
+embedded-javascript-library *usr/share/nodejs/@nodelib/fs.stat/out/providers/async.js*
+embedded-javascript-library *usr/share/nodejs/@nodelib/fs.walk/out/providers/async.js*
+embedded-javascript-library *usr/share/nodejs/@nodelib/fs.walk/out/readers/async.js*
+embedded-javascript-library *usr/share/nodejs/fast-glob/out/providers/async.js*

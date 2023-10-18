@@ -1,3 +1,123 @@
+node-globby (13.1.3+~cs16.25.40-1) unstable; urgency=medium
+
+  * Team upload
+  * Declare compliance with policy 4.6.2
+  * New upstream version 13.1.3+~cs16.25.40
+  * Refresh patches
+  * Use updated dh-nodejs to fix fast-glob install
+
+ -- Yadd <yadd@debian.org>  Sat, 17 Dec 2022 19:15:55 +0100
+
+node-globby (13.1.2+~cs16.24.39-2) unstable; urgency=medium
+
+  * Team upload
+  * Add build dependency to node-minimist (Closes: #1020158)
+
+ -- Yadd <yadd@debian.org>  Sun, 18 Sep 2022 09:08:38 +0200
+
+node-globby (13.1.2+~cs16.24.39-1) unstable; urgency=medium
+
+  * Team upload
+  * Declare compliance with policy 4.6.1
+  * New upstream version 13.1.2+~cs16.24.39
+  * Refresh patches
+
+ -- Yadd <yadd@debian.org>  Sun, 26 Jun 2022 13:54:23 +0200
+
+node-globby (13.1.1+~cs16.24.39-8) unstable; urgency=medium
+
+  * Team upload
+  * Fix test for nodejs >= 16
+
+ -- Yadd <yadd@debian.org>  Tue, 03 May 2022 06:29:28 +0200
+
+node-globby (13.1.1+~cs16.24.39-7) unstable; urgency=medium
+
+  * Team upload
+  * Fix build
+
+ -- Yadd <yadd@debian.org>  Fri, 08 Apr 2022 17:02:36 +0200
+
+node-globby (13.1.1+~cs16.24.39-6) unstable; urgency=medium
+
+  * Team upload
+  * Require node-slash >= 4
+  * Better commonjs export
+
+ -- Yadd <yadd@debian.org>  Fri, 08 Apr 2022 16:47:08 +0200
+
+node-globby (13.1.1+~cs16.24.39-5) unstable; urgency=medium
+
+  * Team upload
+  * Reduce circular build-dependencies
+    * Drop useless dependencies to node-array-union, node-execa and node-glob
+    * Don't launch test during build
+
+ -- Yadd <yadd@debian.org>  Fri, 08 Apr 2022 06:04:38 +0200
+
+node-globby (13.1.1+~cs16.24.39-4) unstable; urgency=medium
+
+  * Team upload
+  * Fix autopkgtest
+  * Back to unstable
+
+ -- Yadd <yadd@debian.org>  Wed, 06 Apr 2022 14:08:42 +0200
+
+node-globby (13.1.1+~cs16.24.39-3) experimental; urgency=medium
+
+  * Team upload
+  * Re-enable test (tape instead of ava)
+
+ -- Yadd <yadd@debian.org>  Fri, 01 Apr 2022 07:08:38 +0200
+
+node-globby (13.1.1+~cs16.24.39-2) experimental; urgency=medium
+
+  * Drop useless link
+  * Update commonjs files: add missing globby.sync
+
+ -- Yadd <yadd@debian.org>  Tue, 29 Mar 2022 12:28:54 +0200
+
+node-globby (13.1.1+~cs16.24.39-1) experimental; urgency=medium
+
+  * Team upload
+  * New upstream version 13.1.1+~cs16.24.39
+  * Temporary disable test
+  * Provide commonjs files that expose the same API than glob 11
+
+ -- Yadd <yadd@debian.org>  Sun, 27 Mar 2022 13:05:59 +0200
+
+node-globby (12.0.2+~cs16.24.35-3) experimental; urgency=medium
+
+  * Team upload
+  * Drop 4 test when running autopkgtest
+
+ -- Yadd <yadd@debian.org>  Tue, 08 Feb 2022 07:05:52 +0100
+
+node-globby (12.0.2+~cs16.24.35-2) experimental; urgency=medium
+
+  * Team upload
+  * Reenable test (tape instead of ava)
+
+ -- Yadd <yadd@debian.org>  Mon, 07 Feb 2022 11:56:53 +0100
+
+node-globby (12.0.2+~cs16.24.35-1) experimental; urgency=medium
+
+  * Team upload
+  * Fix filenamemangle
+  * New upstream version 12.0.2+~cs16.24.35
+  * Drop disable-test-for-autopkgtest.diff, now included in upstream
+  * Disable test
+  * Update dependencies
+
+ -- Yadd <yadd@debian.org>  Mon, 07 Feb 2022 10:11:09 +0100
+
+node-globby (11.0.2+~cs16.20.37-3) unstable; urgency=medium
+
+  * Team upload
+  * Test-depends on node-get-stream
+
+ -- Yadd <yadd@debian.org>  Fri, 01 Apr 2022 07:04:39 +0200
+
 node-globby (11.0.2+~cs16.20.37-2) unstable; urgency=medium
 
   * Team upload

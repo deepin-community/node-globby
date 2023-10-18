@@ -1,5 +1,3 @@
-import * as os from 'os';
-
 import * as smoke from './smoke';
 
 smoke.suite('Smoke → Regular', [
@@ -486,7 +484,43 @@ smoke.suite('Smoke → Regular (relative)', [
 	{ pattern: './../*', cwd: 'fixtures/first' }
 ]);
 
-smoke.suite('Smoke → Regular (root)', [
-	// ISSUE-266
-	{ pattern: '/tmp/*', condition: () => os.platform() !== 'win32' }
+smoke.suite('Smoke → Regular (relative & ignore)', [
+	{
+		pattern: './../*',
+		cwd: 'fixtures/first',
+		ignore: '../*',
+		correct: true,
+		reason: 'The `node-glob` package does not exclude files, although the `../*` pattern can be applied here.'
+	},
+	{ pattern: './../*', cwd: 'fixtures/first', ignore: './../*' },
+	{ pattern: './../*', cwd: 'fixtures/first', ignore: '**' },
+
+	{ pattern: '../*', cwd: 'fixtures/first', ignore: '../*' },
+	{ pattern: '../*', cwd: 'fixtures/first', ignore: '**' },
+
+	{ pattern: '../../*', cwd: 'fixtures/first/nested', ignore: '../../*' },
+	{ pattern: '../../*', cwd: 'fixtures/first/nested', ignore: '**' },
+
+	{ pattern: '../{first,second}', cwd: 'fixtures/first', ignore: '../first/**' },
+	{ pattern: '../{first,second}', cwd: 'fixtures/first', ignore: '**/first/**' }
+]);
+
+smoke.suite('Smoke -> Regular (negative group)', [
+	{
+		pattern: '**/!(*.md)',
+		cwd: 'fixtures/first'
+	}
+]);
+
+smoke.suite('Smoke -> Regular (segmented lists)', [
+	{
+		pattern: '{book.xml,**/library/*/book.md}',
+		cwd: 'fixtures/third',
+		broken: true,
+		issue: 365
+	},
+	{
+		pattern: '{book.xml,library/**/a/book.md}',
+		cwd: 'fixtures/third'
+	}
 ]);

@@ -1,0 +1,4 @@
+mjs2cjs index.js
+perl -i -pe 's/node://g' index.cjs
+mv index.cjs globby.cjs
+cp debian/index.cjs .

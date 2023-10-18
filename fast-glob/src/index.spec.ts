@@ -22,7 +22,9 @@ describe('Package', () => {
 				'fixtures/first/nested/file.md',
 				'fixtures/second/file.md',
 				'fixtures/second/nested/directory/file.md',
-				'fixtures/second/nested/file.md'
+				'fixtures/second/nested/file.md',
+				'fixtures/third/library/a/book.md',
+				'fixtures/third/library/b/book.md'
 			];
 
 			const actual = fg.sync(['fixtures/**/*.md']);
@@ -67,7 +69,9 @@ describe('Package', () => {
 				'fixtures/first/nested/file.md',
 				'fixtures/second/file.md',
 				'fixtures/second/nested/directory/file.md',
-				'fixtures/second/nested/file.md'
+				'fixtures/second/nested/file.md',
+				'fixtures/third/library/a/book.md',
+				'fixtures/third/library/b/book.md'
 			];
 
 			const actual = await fg(['fixtures/**/*.md']);
@@ -112,7 +116,9 @@ describe('Package', () => {
 				'fixtures/first/nested/file.md',
 				'fixtures/second/file.md',
 				'fixtures/second/nested/directory/file.md',
-				'fixtures/second/nested/file.md'
+				'fixtures/second/nested/file.md',
+				'fixtures/third/library/a/book.md',
+				'fixtures/third/library/b/book.md'
 			];
 
 			const actual: string[] = [];
@@ -179,6 +185,17 @@ describe('Package', () => {
 			];
 
 			const actual = fg.generateTasks(['*', '!*.txt'], { ignore: ['*.md'] });
+
+			assert.deepStrictEqual(actual, expected);
+		});
+
+		it('should clean up patterns', () => {
+			const expected = [
+				// Clean up duplicate slashes
+				tests.task.builder().base('fixtures').positive('fixtures/*').build()
+			];
+
+			const actual = fg.generateTasks(['fixtures//*']);
 
 			assert.deepStrictEqual(actual, expected);
 		});

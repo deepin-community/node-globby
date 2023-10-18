@@ -1,6 +1,6 @@
 /// <reference types="node" />
-import * as fs from 'fs';
-import { PrepareOptionsFromClass } from './types';
+import type * as fs from 'fs';
+import type { PrepareOptionsFromClass } from './types';
 export default class Dirent implements fs.Dirent {
     private readonly _options;
     readonly name: string;
@@ -13,4 +13,3 @@ export default class Dirent implements fs.Dirent {
     isFIFO(): boolean;
     isSocket(): boolean;
 }
-//# sourceMappingURL=dirent.d.ts.map

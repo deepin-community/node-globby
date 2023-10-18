@@ -1,2 +1,4 @@
+debian/patches
 fixtures
-test.js
+package.json
+tests

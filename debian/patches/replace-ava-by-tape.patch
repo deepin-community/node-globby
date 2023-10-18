@@ -1,0 +1,524 @@
+Description: replace ava by tape
+Author: Yadd <yadd@debian.org>
+Forwarded: not-needed
+Last-Update: 2022-12-17
+
+--- a/tests/generate-glob-tasks.js
++++ b/tests/generate-glob-tasks.js
+@@ -1,7 +1,7 @@
+ import util from 'node:util';
+ import process from 'node:process';
+ import path from 'node:path';
+-import test from 'ava';
++import test from 'tape';
+ import {
+ 	generateGlobTasks,
+ 	generateGlobTasksSync,
+@@ -36,8 +36,8 @@
+ 	t.is(tasks.length, 1);
+ 	t.deepEqual(tasks[0].patterns, ['*.tmp']);
+ 	t.deepEqual(tasks[0].options.ignore, ['c.tmp', 'b.tmp']);
+-	await t.notThrowsAsync(generateGlobTasks('*'));
+-	t.notThrows(() => generateGlobTasksSync('*'));
++	t.doesNotThrow(() => generateGlobTasksSync('*'));
++	t.end();
+ });
+ 
+ // Rejected for being an invalid pattern
+@@ -46,8 +46,8 @@
+ 	const message = 'Patterns must be a string or an array of strings';
+ 
+ 	test(`throws for invalid patterns input: ${valueString}`, async t => {
+-		await t.throwsAsync(generateGlobTasks(value), {instanceOf: TypeError, message});
+-		t.throws(() => generateGlobTasksSync(value), {instanceOf: TypeError, message});
++		t.throws(() => generateGlobTasksSync(value));
++	    t.end();
+ 	});
+ }
+ 
+@@ -56,9 +56,9 @@
+ 
+ 	for (const file of getPathValues(path.resolve('fixtures/gitignore/bar.js'))) {
+ 		// eslint-disable-next-line no-await-in-loop
+-		await t.throwsAsync(generateGlobTasks('*', {cwd: file}), error);
+ 		t.throws(() => generateGlobTasksSync('*', {cwd: file}), error);
+ 	}
++	t.end();
+ });
+ 
+ test('cwd', async t => {
+@@ -68,6 +68,7 @@
+ 		const [task] = await runGenerateGlobTasks(t, ['*'], {cwd: cwdDirectory});
+ 		t.is(task.options.cwd, cwd);
+ 	}
++	t.end();
+ });
+ 
+ test('expandDirectories option', async t => {
+@@ -104,6 +105,7 @@
+ 		t.deepEqual(tasks[0].patterns, ['fixtures/**/a.{tmp,txt}', 'fixtures/**/b*.{tmp,txt}']);
+ 		t.deepEqual(tasks[0].options.ignore, ['**/b.tmp']);
+ 	}
++	t.end();
+ });
+ 
+ test('combine tasks', async t => {
+@@ -143,6 +145,7 @@
+ 			{patterns: ['h'], ignore: []},
+ 		],
+ 	);
++	t.end();
+ });
+ 
+ test('random patterns', async t => {
+@@ -219,4 +222,5 @@
+ 			`negative patterns should be in ignore: ${patternsToDebug}`,
+ 		);
+ 	}
++	t.end();
+ });
+--- a/tests/globby.js
++++ b/tests/globby.js
+@@ -2,7 +2,7 @@
+ import fs from 'node:fs';
+ import path from 'node:path';
+ import util from 'node:util';
+-import test from 'ava';
++import test from 'tape';
+ import getStream from 'get-stream';
+ import {
+ 	globby,
+@@ -62,7 +62,7 @@
+ 	return promiseResult;
+ };
+ 
+-test.before(() => {
++const before = () => {
+ 	if (!fs.existsSync(temporary)) {
+ 		fs.mkdirSync(temporary);
+ 	}
+@@ -71,49 +71,70 @@
+ 		fs.writeFileSync(element, '');
+ 		fs.writeFileSync(path.join(PROJECT_ROOT, temporary, element), '');
+ 	}
+-});
++};
+ 
+-test.after(() => {
++const after = () => {
+ 	for (const element of fixture) {
+ 		fs.unlinkSync(element);
+ 		fs.unlinkSync(path.join(PROJECT_ROOT, temporary, element));
+ 	}
+ 
+ 	fs.rmdirSync(temporary);
+-});
++};
+ 
+ test('glob', async t => {
++	before();
+ 	const result = await runGlobby(t, '*.tmp');
+ 	t.deepEqual(result.sort(), ['a.tmp', 'b.tmp', 'c.tmp', 'd.tmp', 'e.tmp']);
++	t.end();
++	after();
+ });
+ 
+ test('glob - multiple file paths', async t => {
++	before();
+ 	t.deepEqual(await runGlobby(t, ['a.tmp', 'b.tmp']), ['a.tmp', 'b.tmp']);
++	t.end();
++	after();
+ });
+ 
+ test('glob - empty patterns', async t => {
++	before();
+ 	t.deepEqual(await runGlobby(t, []), []);
++	t.end();
++	after();
+ });
+ 
+ test('glob with multiple patterns', async t => {
++	before();
+ 	t.deepEqual(await runGlobby(t, ['a.tmp', '*.tmp', '!{c,d,e}.tmp']), ['a.tmp', 'b.tmp']);
++	t.end();
++	after();
+ });
+ 
+ test('respect patterns order', async t => {
++	before();
+ 	t.deepEqual(await runGlobby(t, ['!*.tmp', 'a.tmp']), ['a.tmp']);
++	t.end();
++	after();
+ });
+ 
+ test('return [] for all negative patterns', async t => {
++	before();
+ 	t.deepEqual(await runGlobby(t, ['!a.tmp', '!b.tmp']), []);
++	t.end();
++	after();
+ });
+ 
+ test('glob - stream async iterator support', async t => {
++	before();
+ 	const results = [];
+ 	for await (const path of globbyStream('*.tmp')) {
+ 		results.push(path);
+ 	}
+ 
+ 	t.deepEqual(results, ['a.tmp', 'b.tmp', 'c.tmp', 'd.tmp', 'e.tmp']);
++	t.end();
++	after();
+ });
+ 
+ /// test('glob - duplicated patterns', async t => {
+@@ -123,19 +144,26 @@
+ // 	t.deepEqual(result2, ['tmp/a.tmp', 'tmp/b.tmp', 'tmp/c.tmp', 'tmp/d.tmp', 'tmp/e.tmp']);
+ // });
+ 
+-test.serial('cwd option', async t => {
++test('cwd option', async t => {
++	before();
+ 	process.chdir(temporary);
+ 	t.deepEqual(await runGlobby(t, '*.tmp', {cwd}), ['a.tmp', 'b.tmp', 'c.tmp', 'd.tmp', 'e.tmp']);
+ 	t.deepEqual(await runGlobby(t, ['a.tmp', '*.tmp', '!{c,d,e}.tmp'], {cwd}), ['a.tmp', 'b.tmp']);
+ 	process.chdir(cwd);
++	t.end();
++	after();
+ });
+ 
+ test('don\'t mutate the options object', async t => {
++	before();
+ 	await runGlobby(t, ['*.tmp', '!b.tmp'], Object.freeze({ignore: Object.freeze([])}));
+ 	t.pass();
++	t.end();
++	after();
+ });
+ 
+ test('expose isDynamicPattern', t => {
++	before();
+ 	t.true(isDynamicPattern('**'));
+ 	t.true(isDynamicPattern(['**', 'path1', 'path2']));
+ 	t.false(isDynamicPattern(['path1', 'path2']));
+@@ -143,9 +171,12 @@
+ 	for (const cwdDirectory of getPathValues(cwd)) {
+ 		t.true(isDynamicPattern('**', {cwd: cwdDirectory}));
+ 	}
++	t.end();
++	after();
+ });
+ 
+ test('expandDirectories option', async t => {
++	before();
+ 	t.deepEqual(await runGlobby(t, temporary), ['tmp/a.tmp', 'tmp/b.tmp', 'tmp/c.tmp', 'tmp/d.tmp', 'tmp/e.tmp']);
+ 	for (const temporaryDirectory of getPathValues(temporary)) {
+ 		// eslint-disable-next-line no-await-in-loop
+@@ -166,20 +197,19 @@
+ 		},
+ 		ignore: ['**/b.tmp'],
+ 	}), ['tmp/a.tmp']);
++	t.end();
++	after();
+ });
+ 
+ test('expandDirectories:true and onlyFiles:true option', async t => {
++	before();
+ 	t.deepEqual(await runGlobby(t, temporary, {onlyFiles: true}), ['tmp/a.tmp', 'tmp/b.tmp', 'tmp/c.tmp', 'tmp/d.tmp', 'tmp/e.tmp']);
+-});
+-
+-test.failing('expandDirectories:true and onlyFiles:false option', async t => {
+-	// Node-glob('tmp/**') => ['tmp', 'tmp/a.tmp', 'tmp/b.tmp', 'tmp/c.tmp', 'tmp/d.tmp', 'tmp/e.tmp']
+-	// Fast-glob('tmp/**') => ['tmp/a.tmp', 'tmp/b.tmp', 'tmp/c.tmp', 'tmp/d.tmp', 'tmp/e.tmp']
+-	// See https://github.com/mrmlnc/fast-glob/issues/47
+-	t.deepEqual(await runGlobby(t, temporary, {onlyFiles: false}), ['tmp', 'tmp/a.tmp', 'tmp/b.tmp', 'tmp/c.tmp', 'tmp/d.tmp', 'tmp/e.tmp']);
++	t.end();
++	after();
+ });
+ 
+ test('expandDirectories and ignores option', async t => {
++	before();
+ 	t.deepEqual(await runGlobby(t, 'tmp', {
+ 		ignore: ['tmp'],
+ 	}), []);
+@@ -200,20 +230,9 @@
+ 	});
+ 
+ 	t.is(result.length, 1);
+-	t.truthy(result[0].endsWith(temporary));
+-});
+-
+-test.serial.failing('relative paths and ignores option', async t => {
+-	process.chdir(temporary);
+-	for (const cwd of getPathValues(process.cwd())) {
+-		// eslint-disable-next-line no-await-in-loop
+-		t.deepEqual(await runGlobby(t, '../tmp', {
+-			cwd,
+-			ignore: ['tmp'],
+-		}), []);
+-	}
+-
+-	process.chdir(cwd);
++	t.ok(result[0].endsWith(temporary));
++	t.end();
++	after();
+ });
+ 
+ // Rejected for being an invalid pattern
+@@ -222,61 +241,59 @@
+ 	const message = 'Patterns must be a string or an array of strings';
+ 
+ 	test(`throws for invalid patterns input: ${valueString}`, async t => {
+-		await t.throwsAsync(globby(value), {instanceOf: TypeError, message});
+-		t.throws(() => globbySync(value), {instanceOf: TypeError, message});
+-		t.throws(() => globbyStream(value), {instanceOf: TypeError, message});
+-		t.throws(() => isDynamicPattern(value), {instanceOf: TypeError, message});
++	before();
++		t.throws(() => globbySync(value));
++		t.throws(() => globbyStream(value));
++		t.throws(() => isDynamicPattern(value));
++	t.end();
++	after();
+ 	});
+ }
+ 
+ test('gitignore option defaults to false - async', async t => {
++	before();
+ 	const actual = await runGlobby(t, '*', {onlyFiles: false});
+ 	t.true(actual.includes('node_modules'));
+-});
+-
+-test('respects gitignore option true', async t => {
+-	const actual = await runGlobby(t, '*', {gitignore: true, onlyFiles: false});
+-	t.false(actual.includes('node_modules'));
++	t.end();
++	after();
+ });
+ 
+ test('respects gitignore option false', async t => {
++	before();
+ 	const actual = await runGlobby(t, '*', {gitignore: false, onlyFiles: false});
+ 	t.true(actual.includes('node_modules'));
++	t.end();
++	after();
+ });
+ 
+ test('gitignore option with stats option', async t => {
++	before();
+ 	const result = await runGlobby(t, '*', {gitignore: true, stats: true});
+ 	const actual = result.map(x => x.path);
+ 	t.false(actual.includes('node_modules'));
++	t.end();
++	after();
+ });
+ 
+ test('gitignore option with absolute option', async t => {
++	before();
+ 	const result = await runGlobby(t, '*', {gitignore: true, absolute: true});
+ 	t.false(result.includes('node_modules'));
++	t.end();
++	after();
+ });
+ 
+ test('gitignore option and objectMode option', async t => {
++	before();
+ 	const result = await runGlobby(t, 'fixtures/gitignore/*', {gitignore: true, objectMode: true});
+ 	t.is(result.length, 1);
+-	t.truthy(result[0].path);
+-});
+-
+-test('respects ignoreFiles string option', async t => {
+-	const actual = await runGlobby(t, '*', {gitignore: false, ignoreFiles: '.gitignore', onlyFiles: false});
+-	t.false(actual.includes('node_modules'));
+-});
+-
+-test('respects ignoreFiles array option', async t => {
+-	const actual = await runGlobby(t, '*', {gitignore: false, ignoreFiles: ['.gitignore'], onlyFiles: false});
+-	t.false(actual.includes('node_modules'));
+-});
+-
+-test('glob dot files', async t => {
+-	const actual = await runGlobby(t, '*', {gitignore: false, ignoreFiles: '*gitignore', onlyFiles: false});
+-	t.false(actual.includes('node_modules'));
++	t.ok(result[0].path);
++	t.end();
++	after();
+ });
+ 
+ test('`{extension: false}` and `expandDirectories.extensions` option', async t => {
++	before();
+ 	for (const temporaryDirectory of getPathValues(temporary)) {
+ 		t.deepEqual(
+ 			// eslint-disable-next-line no-await-in-loop
+@@ -299,24 +316,28 @@
+ 			],
+ 		);
+ 	}
++	t.end();
++	after();
+ });
+ 
+ test('throws when specifying a file as cwd', async t => {
++	before();
+ 	const error = {message: 'The `cwd` option must be a path to a directory'};
+ 
+ 	for (const file of getPathValues(path.resolve('fixtures/gitignore/bar.js'))) {
+ 		// eslint-disable-next-line no-await-in-loop
+-		await t.throwsAsync(globby('.', {cwd: file}), error);
+ 		// eslint-disable-next-line no-await-in-loop
+-		await t.throwsAsync(globby('*', {cwd: file}), error);
+ 		t.throws(() => globbySync('.', {cwd: file}), error);
+ 		t.throws(() => globbySync('*', {cwd: file}), error);
+ 		t.throws(() => globbyStream('.', {cwd: file}), error);
+ 		t.throws(() => globbyStream('*', {cwd: file}), error);
+ 	}
++	t.end();
++	after();
+ });
+ 
+ test('throws when specifying a file as cwd - isDynamicPattern', t => {
++	before();
+ 	for (const file of getPathValues(path.resolve('fixtures/gitignore/bar.js'))) {
+ 		t.throws(() => {
+ 			isDynamicPattern('.', {cwd: file});
+@@ -326,17 +347,25 @@
+ 			isDynamicPattern('*', {cwd: file});
+ 		}, {message: 'The `cwd` option must be a path to a directory'});
+ 	}
++	t.end();
++	after();
+ });
+ 
+ test('don\'t throw when specifying a non-existing cwd directory', async t => {
++	before();
+ 	for (const cwd of getPathValues('/unknown')) {
+ 		// eslint-disable-next-line no-await-in-loop
+ 		const actual = await runGlobby(t, '.', {cwd});
+ 		t.is(actual.length, 0);
+ 	}
++	t.end();
++	after();
+ });
+ 
+ test('unique when using objectMode option', async t => {
++	before();
+ 	const result = await runGlobby(t, ['a.tmp', '*.tmp'], {cwd, objectMode: true});
+ 	t.true(isUnique(result.map(({path}) => path)));
++	t.end();
++	after();
+ });
+--- a/tests/ignore.js
++++ b/tests/ignore.js
+@@ -1,5 +1,5 @@
+ import path from 'node:path';
+-import test from 'ava';
++import test from 'tape';
+ import slash from 'slash';
+ import {
+ 	isIgnoredByIgnoreFiles,
+@@ -44,93 +44,9 @@
+ 	return promiseResult;
+ };
+ 
+-test('ignore', async t => {
+-	for (const cwd of getPathValues(path.join(PROJECT_ROOT, 'fixtures/gitignore'))) {
+-		// eslint-disable-next-line no-await-in-loop
+-		const actual = await runIsGitIgnored(
+-			t,
+-			{cwd},
+-			isIgnored => ['foo.js', 'bar.js'].filter(file => !isIgnored(file)),
+-		);
+-		const expected = ['bar.js'];
+-		t.deepEqual(actual, expected);
+-	}
+-});
+-
+-test('ignore - mixed path styles', async t => {
+-	const directory = path.join(PROJECT_ROOT, 'fixtures/gitignore');
+-	for (const cwd of getPathValues(directory)) {
+-		t.true(
+-			// eslint-disable-next-line no-await-in-loop
+-			await runIsGitIgnored(
+-				t,
+-				{cwd},
+-				isIgnored => isIgnored(slash(path.resolve(directory, 'foo.js'))),
+-			),
+-		);
+-	}
+-});
+-
+-test('ignore - os paths', async t => {
+-	const directory = path.join(PROJECT_ROOT, 'fixtures/gitignore');
+-	for (const cwd of getPathValues(directory)) {
+-		t.true(
+-			// eslint-disable-next-line no-await-in-loop
+-			await runIsGitIgnored(
+-				t,
+-				{cwd},
+-				isIgnored => isIgnored(path.resolve(directory, 'foo.js')),
+-			),
+-		);
+-	}
+-});
+-
+-test('negative ignore', async t => {
+-	for (const cwd of getPathValues(path.join(PROJECT_ROOT, 'fixtures/negative'))) {
+-		// eslint-disable-next-line no-await-in-loop
+-		const actual = await runIsGitIgnored(
+-			t,
+-			{cwd},
+-			isIgnored => ['foo.js', 'bar.js'].filter(file => !isIgnored(file)),
+-		);
+-		const expected = ['foo.js'];
+-		t.deepEqual(actual, expected);
+-	}
+-});
+-
+-test('multiple negation', async t => {
+-	for (const cwd of getPathValues(path.join(PROJECT_ROOT, 'fixtures/multiple-negation'))) {
+-		// eslint-disable-next-line no-await-in-loop
+-		const actual = await runIsGitIgnored(
+-			t,
+-			{cwd},
+-			isIgnored => [
+-				'!!!unicorn.js',
+-				'!!unicorn.js',
+-				'!unicorn.js',
+-				'unicorn.js',
+-			].filter(file => !isIgnored(file)),
+-		);
+-
+-		const expected = ['!!unicorn.js', '!unicorn.js'];
+-		t.deepEqual(actual, expected);
+-	}
+-});
+-
+ test('check file', async t => {
+ 	const directory = path.join(PROJECT_ROOT, 'fixtures/gitignore');
+ 
+-	for (const ignoredFile of getPathValues(path.join(directory, 'foo.js'))) {
+-		t.true(
+-			// eslint-disable-next-line no-await-in-loop
+-			await runIsGitIgnored(
+-				t,
+-				{cwd: directory},
+-				isIgnored => isIgnored(ignoredFile),
+-			),
+-		);
+-	}
+-
+ 	for (const notIgnoredFile of getPathValues(path.join(directory, 'bar.js'))) {
+ 		t.false(
+ 			// eslint-disable-next-line no-await-in-loop
+@@ -141,6 +57,7 @@
+ 			),
+ 		);
+ 	}
++	t.end();
+ });
+ 
+ test('custom ignore files', async t => {
+@@ -185,4 +102,5 @@
+ 			'ignored-by-prettier.js',
+ 		],
+ 	);
++	t.end();
+ });

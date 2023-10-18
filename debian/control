@@ -6,21 +6,20 @@ Section: javascript
 Testsuite: autopkgtest-pkg-nodejs
 Priority: optional
 Build-Depends: debhelper-compat (= 13)
- , dh-sequence-nodejs
- , mocha
- , node-array-union <!nocheck>
+ , dh-sequence-nodejs (>= 0.15.12~)
  , node-babel7
  , node-braces (>= 3.0.2+~3.0.0)
  , node-ci-info (>= 2.0.0+~2.0.0)
  , node-glob-parent (>= 5.1.1+~5.1.0)
- , node-ignore <!nocheck>
- , node-micromatch <!nocheck>
- , node-path-type <!nocheck>
+ , node-micromatch
+ , node-minimatch
+ , node-minimist
  , node-sinon (>= 9.2.0+ds+~cs54.23.21)
- , node-tape <!nocheck>
+ , node-types-mocha
  , node-types-node
  , node-typescript
-Standards-Version: 4.6.0
+ , rollup
+Standards-Version: 4.6.2
 Vcs-Browser: https://salsa.debian.org/js-team/node-globby
 Vcs-Git: https://salsa.debian.org/js-team/node-globby.git
 Homepage: https://github.com/sindresorhus/globby
@@ -29,13 +28,13 @@ Rules-Requires-Root: no
 Package: node-globby
 Architecture: all
 Depends: ${misc:Depends}
- , node-array-union
- , node-glob
  , node-glob-parent
  , node-ignore
  , node-micromatch
  , node-path-type
- , node-slash
+ , node-queue-microtask
+ , node-slash (>= 4)
+ , nodejs:any
 Breaks: node-copy-webpack-plugin (<< 4.3.0-9~)
 Provides: ${nodejs:Provides}
 Description: Extends glob with promise API

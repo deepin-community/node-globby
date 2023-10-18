@@ -14,4 +14,3 @@ T extends (infer TReturnType) ? TReturnType :
  * Default branch. Potentially impossible case.
  */
 T;
-//# sourceMappingURL=types.d.ts.map

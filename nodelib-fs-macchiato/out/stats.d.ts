@@ -1,6 +1,6 @@
 /// <reference types="node" />
-import * as fs from 'fs';
-import { PrepareOptionsFromClass } from './types';
+import type * as fs from 'fs';
+import type { PrepareOptionsFromClass } from './types';
 export default class Stats implements fs.Stats {
     private readonly _options;
     readonly _date: Date;
@@ -31,4 +31,3 @@ export default class Stats implements fs.Stats {
     isFIFO(): boolean;
     isSocket(): boolean;
 }
-//# sourceMappingURL=stats.d.ts.map

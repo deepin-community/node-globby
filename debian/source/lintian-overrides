@@ -1,0 +1,5 @@
+# Done
+add-component-copyright nodelib-fs-macchiato [debian/copyright]
+add-component-copyright nodelib-fsscandir [debian/copyright]
+add-component-copyright nodelib-fsstat [debian/copyright]
+add-component-copyright nodelib-fswalk [debian/copyright]

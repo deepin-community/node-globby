@@ -1,6 +1,6 @@
 {
   "name": "@nodelib/fs.macchiato",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A set of classes for easy testing of built-in structures of FS",
   "license": "MIT",
   "repository": "https://github.com/nodelib/nodelib/tree/master/packages/fs/fs.macchiato",
@@ -16,6 +16,11 @@
   "engines": {
     "node": ">= 8"
   },
+  "files": [
+    "out/*",
+    "!out/*.map",
+    "!out/*.spec.*"
+  ],
   "main": "out/index.js",
   "typings": "out/index.d.ts",
   "scripts": {
@@ -27,5 +32,5 @@
     "build": "npm run clean && npm run compile && npm run lint && npm test",
     "watch": "npm run clean && npm run compile:watch"
   },
-  "gitHead": "cb5f7e893a986164c3b847a4f1faef6c54cadd68"
+  "gitHead": "d6a7960d5281d3dd5f8e2efba49bb552d090f562"
 }
