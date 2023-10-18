@@ -79,10 +79,18 @@ describe('Utils → Pattern', () => {
 
 			it('should return true for patterns that include brace expansions symbols', () => {
 				assert.ok(util.isDynamicPattern('{,}'));
+				assert.ok(util.isDynamicPattern('abc/{a.txt,}'));
 				assert.ok(util.isDynamicPattern('{a,}'));
 				assert.ok(util.isDynamicPattern('{,b}'));
 				assert.ok(util.isDynamicPattern('{a,b}'));
+				assert.ok(util.isDynamicPattern('{a,b,c}'));
+				assert.ok(util.isDynamicPattern('{a' + ','.repeat(999999) + 'b}'));
+				assert.ok(util.isDynamicPattern('{a,b,{c,d}}'));
+				// The second braces pass
+				assert.ok(util.isDynamicPattern('{a,b,{c,d}'));
 				assert.ok(util.isDynamicPattern('{1..3}'));
+				assert.ok(util.isDynamicPattern('abc/{1..3}'));
+				assert.ok(util.isDynamicPattern('{2..10..2}'));
 			});
 
 			it('should return false for brace extension when the `braceExpansion` option is disabled', () => {
@@ -112,16 +120,20 @@ describe('Utils → Pattern', () => {
 
 			it('should return false for unfinished regex character class', () => {
 				assert.ok(!util.isDynamicPattern('['));
+				assert.ok(!util.isDynamicPattern('['.repeat(999999)));
 				assert.ok(!util.isDynamicPattern('[abc'));
 			});
 
 			it('should return false for unfinished regex group', () => {
 				assert.ok(!util.isDynamicPattern('(a|b'));
+				assert.ok(!util.isDynamicPattern('('.repeat(999999) + 'a|b'));
+				assert.ok(!util.isDynamicPattern('(a' + '|'.repeat(999999) + 'b'));
 				assert.ok(!util.isDynamicPattern('abc/(a|b'));
 			});
 
 			it('should return false for unfinished glob extension', () => {
 				assert.ok(!util.isDynamicPattern('@('));
+				assert.ok(!util.isDynamicPattern('@' + '('.repeat(999999) + 'a'));
 				assert.ok(!util.isDynamicPattern('@(a'));
 				assert.ok(!util.isDynamicPattern('@(a|'));
 				assert.ok(!util.isDynamicPattern('@(a|b'));
@@ -129,10 +141,19 @@ describe('Utils → Pattern', () => {
 
 			it('should return false for unfinished brace expansions', () => {
 				assert.ok(!util.isDynamicPattern('{'));
+				assert.ok(!util.isDynamicPattern('{'.repeat(999999)));
 				assert.ok(!util.isDynamicPattern('{a'));
+				assert.ok(!util.isDynamicPattern('{a}'));
 				assert.ok(!util.isDynamicPattern('{,'));
 				assert.ok(!util.isDynamicPattern('{a,'));
 				assert.ok(!util.isDynamicPattern('{a,b'));
+				assert.ok(!util.isDynamicPattern('{a' + ','.repeat(999999) + 'b'));
+				assert.ok(!util.isDynamicPattern('{1..'));
+				assert.ok(!util.isDynamicPattern('{1.' + '.'.repeat(999999) + '2'));
+				assert.ok(!util.isDynamicPattern('{2..10'));
+				assert.ok(!util.isDynamicPattern('{2..10.'));
+				assert.ok(!util.isDynamicPattern('{2..10..'));
+				assert.ok(!util.isDynamicPattern('{2..10..2'));
 			});
 		});
 
@@ -254,6 +275,52 @@ describe('Utils → Pattern', () => {
 			const actual = util.getPositivePatterns(['!*.js', '!*.ts']);
 
 			assert.deepStrictEqual(actual, expected);
+		});
+	});
+
+	describe('.getPatternsInsideCurrentDirectory', () => {
+		it('should return patterns', () => {
+			const expected: Pattern[] = ['.', './*', '*', 'a/*'];
+
+			const actual = util.getPatternsInsideCurrentDirectory(['.', './*', '*', 'a/*', '..', '../*', './..', './../*']);
+
+			assert.deepStrictEqual(actual, expected);
+		});
+	});
+
+	describe('.getPatternsOutsideCurrentDirectory', () => {
+		it('should return patterns', () => {
+			const expected: Pattern[] = ['..', '../*', './..', './../*'];
+
+			const actual = util.getPatternsOutsideCurrentDirectory(['.', './*', '*', 'a/*', '..', '../*', './..', './../*']);
+
+			assert.deepStrictEqual(actual, expected);
+		});
+	});
+
+	describe('.isPatternRelatedToParentDirectory', () => {
+		it('should be `false` when the pattern refers to the current directory', () => {
+			const actual = util.isPatternRelatedToParentDirectory('.');
+
+			assert.ok(!actual);
+		});
+
+		it('should be `true` when the pattern equals to `..`', () => {
+			const actual = util.isPatternRelatedToParentDirectory('..');
+
+			assert.ok(actual);
+		});
+
+		it('should be `true` when the pattern starts with `..` segment', () => {
+			const actual = util.isPatternRelatedToParentDirectory('../*');
+
+			assert.ok(actual);
+		});
+
+		it('should be `true` when the pattern starts with `./..` segment', () => {
+			const actual = util.isPatternRelatedToParentDirectory('./../*');
+
+			assert.ok(actual);
 		});
 	});
 

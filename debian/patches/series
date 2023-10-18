@@ -1,2 +1,2 @@
-replace-ava-by-tape.diff
-disable-test-for-autopkgtest.diff
+export-commonjs-files.patch
+replace-ava-by-tape.patch

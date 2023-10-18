@@ -22,7 +22,7 @@ Copyright: Kevin Mårtensson <kevinmartensson@gmail.com>
 License: Expat
 
 Files: fast-glob/*
- nodelib-fs*
+ nodelib-fs*/*
 Copyright: Denis Malinochkin
 License: Expat
 
@@ -41,7 +41,7 @@ License: Expat
 
 Files: debian/*
 Copyright: 2017 Sanoob Pattanath <hello@pattanath.com>
- 2020 Yadd <yadd@debian.org>
+ 2020-2022 Yadd <yadd@debian.org>
 License: Expat
 
 Files: debian/build_modules/@types/*

@@ -1,1 +1,4 @@
-tape test.js
+for m in tape get-stream slash; do
+	pkgjs-ln $m || true
+done
+tape tests/*.js

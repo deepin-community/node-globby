@@ -1,49 +1,49 @@
 version=4
 opts=\
 dversionmangle=s/\+(debian|dfsg|ds|deb)(\.\d+)?$//,\
-filenamemangle=s/.*\/v?([\d\.-]+)\.tar\.gz/node-globby-$1.tar.gz/ \
+filenamemangle=s/.*?(\d[\d\.-]*@ARCHIVE_EXT@)/node-globby-$1/ \
  https://github.com/sindresorhus/globby/tags .*/archive/.*/v?([\d\.]+).tar.gz group
 
 opts=\
 ctype=nodejs,\
 component=dir-glob,\
 dversionmangle=auto,\
-filenamemangle=s/.*\/v?([\d\.-]+)\.tar\.gz/node-dir-glob-$1.tar.gz/ \
+filenamemangle=s/.*?(\d[\d\.-]*@ARCHIVE_EXT@)/node-dir-glob-$1/ \
  https://github.com/kevva/dir-glob/tags .*/archive/.*/v?([\d\.]+).tar.gz checksum
 
 opts=\
 ctype=nodejs,\
 component=fast-glob,\
 dversionmangle=auto,\
-filenamemangle=s/.*\/v?([\d\.-]+)\.tar\.gz/node-fast-glob-$1.tar.gz/ \
+filenamemangle=s/.*?(\d[\d\.-]*@ARCHIVE_EXT@)/node-fast-glob-$1/ \
  https://github.com/mrmlnc/fast-glob/tags .*/archive/.*/v?([\d\.]+).tar.gz checksum
 
 opts=\
 ctype=nodejs,\
 component=fastq,\
 dversionmangle=auto,\
-filenamemangle=s/.*\/v?([\d\.-]+)\.tar\.gz/node-fastq-$1.tar.gz/ \
+filenamemangle=s/.*?(\d[\d\.-]*@ARCHIVE_EXT@)/node-fastq-$1/ \
  https://github.com/mcollina/fastq/tags .*/archive/.*/v?([\d\.]+).tar.gz checksum
 
 opts=\
 ctype=nodejs,\
 component=merge2,\
 dversionmangle=auto,\
-filenamemangle=s/.*\/v?([\d\.-]+)\.tar\.gz/node-merge2-$1.tar.gz/ \
+filenamemangle=s/.*?(\d[\d\.-]*@ARCHIVE_EXT@)/node-merge2-$1/ \
  https://github.com/teambition/merge2/tags .*/archive/.*/v?([\d\.]+).tar.gz checksum
 
 opts=\
 ctype=nodejs,\
 component=reusify,\
 dversionmangle=auto,\
-filenamemangle=s/.*\/v?([\d\.-]+)\.tar\.gz/node-reusify-$1.tar.gz/ \
+filenamemangle=s/.*?(\d[\d\.-]*@ARCHIVE_EXT@)/node-reusify-$1/ \
  https://github.com/mcollina/reusify/tags .*/archive/.*/v?([\d\.]+).tar.gz checksum
 
 opts=\
 ctype=nodejs,\
 component=run-parallel,\
 dversionmangle=auto,\
-filenamemangle=s/.*\/v?([\d\.-]+)\.tar\.gz/node-run-parallel-$1.tar.gz/ \
+filenamemangle=s/.*?(\d[\d\.-]*@ARCHIVE_EXT@)/node-run-parallel-$1/ \
  https://github.com/feross/run-parallel/tags .*/archive/.*/v?([\d\.]+).tar.gz checksum
 
 # It is not recommended use npmregistry. Please investigate more.

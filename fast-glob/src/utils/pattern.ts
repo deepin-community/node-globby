@@ -2,7 +2,6 @@ import * as path from 'path';
 
 import * as globParent from 'glob-parent';
 import * as micromatch from 'micromatch';
-import * as picomatch from 'picomatch';
 
 import { MicromatchOptions, Pattern, PatternRe } from '../types';
 
@@ -10,10 +9,10 @@ const GLOBSTAR = '**';
 const ESCAPE_SYMBOL = '\\';
 
 const COMMON_GLOB_SYMBOLS_RE = /[*?]|^!/;
-const REGEX_CHARACTER_CLASS_SYMBOLS_RE = /\[.*]/;
-const REGEX_GROUP_SYMBOLS_RE = /(?:^|[^!*+?@])\(.*\|.*\)/;
-const GLOB_EXTENSION_SYMBOLS_RE = /[!*+?@]\(.*\)/;
-const BRACE_EXPANSIONS_SYMBOLS_RE = /{.*(?:,|\.\.).*}/;
+const REGEX_CHARACTER_CLASS_SYMBOLS_RE = /\[[^[]*]/;
+const REGEX_GROUP_SYMBOLS_RE = /(?:^|[^!*+?@])\([^(]*\|[^|]*\)/;
+const GLOB_EXTENSION_SYMBOLS_RE = /[!*+?@]\([^(]*\)/;
+const BRACE_EXPANSION_SEPARATORS_RE = /,|\.\./;
 
 type PatternTypeOptions = {
 	braceExpansion?: boolean;
@@ -51,11 +50,29 @@ export function isDynamicPattern(pattern: Pattern, options: PatternTypeOptions =
 		return true;
 	}
 
-	if (options.braceExpansion !== false && BRACE_EXPANSIONS_SYMBOLS_RE.test(pattern)) {
+	if (options.braceExpansion !== false && hasBraceExpansion(pattern)) {
 		return true;
 	}
 
 	return false;
+}
+
+function hasBraceExpansion(pattern: string): boolean {
+	const openingBraceIndex = pattern.indexOf('{');
+
+	if (openingBraceIndex === -1) {
+		return false;
+	}
+
+	const closingBraceIndex = pattern.indexOf('}', openingBraceIndex + 1);
+
+	if (closingBraceIndex === -1) {
+		return false;
+	}
+
+	const braceContent = pattern.slice(openingBraceIndex, closingBraceIndex);
+
+	return BRACE_EXPANSION_SEPARATORS_RE.test(braceContent);
 }
 
 export function convertToPositivePattern(pattern: Pattern): Pattern {
@@ -80,6 +97,32 @@ export function getNegativePatterns(patterns: Pattern[]): Pattern[] {
 
 export function getPositivePatterns(patterns: Pattern[]): Pattern[] {
 	return patterns.filter(isPositivePattern);
+}
+
+/**
+ * Returns patterns that can be applied inside the current directory.
+ *
+ * @example
+ * // ['./*', '*', 'a/*']
+ * getPatternsInsideCurrentDirectory(['./*', '*', 'a/*', '../*', './../*'])
+ */
+export function getPatternsInsideCurrentDirectory(patterns: Pattern[]): Pattern[] {
+	return patterns.filter((pattern) => !isPatternRelatedToParentDirectory(pattern));
+}
+
+/**
+ * Returns patterns to be expanded relative to (outside) the current directory.
+ *
+ * @example
+ * // ['../*', './../*']
+ * getPatternsInsideCurrentDirectory(['./*', '*', 'a/*', '../*', './../*'])
+ */
+export function getPatternsOutsideCurrentDirectory(patterns: Pattern[]): Pattern[] {
+	return patterns.filter(isPatternRelatedToParentDirectory);
+}
+
+export function isPatternRelatedToParentDirectory(pattern: Pattern): boolean {
+	return pattern.startsWith('..') || pattern.startsWith('./..');
 }
 
 export function getBaseDirectory(pattern: Pattern): string {
@@ -114,7 +157,7 @@ export function expandBraceExpansion(pattern: Pattern): Pattern[] {
 }
 
 export function getPatternParts(pattern: Pattern, options: MicromatchOptions): Pattern[] {
-	let { parts } = picomatch.scan(pattern, {
+	let { parts } = micromatch.scan(pattern, {
 		...options,
 		parts: true
 	});
